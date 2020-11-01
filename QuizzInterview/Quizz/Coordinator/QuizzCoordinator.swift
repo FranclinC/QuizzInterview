@@ -19,7 +19,8 @@ class QuizzCoodinator {
     }
     
     func start() {
-        let viewModel = QuizzViewModel()
+        let service = QuizzService()
+        let viewModel = QuizzViewModel(service: service)
         view = QuizzViewController(viewModel)
         window.rootViewController = view
         window.makeKeyAndVisible()

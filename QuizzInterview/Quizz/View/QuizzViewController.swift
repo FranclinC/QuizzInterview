@@ -33,6 +33,7 @@ class QuizzViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         viewModel.viewDelegate = self
+        viewModel.fetch()
         
     }
     
@@ -47,7 +48,7 @@ extension QuizzViewController: QuizzViewModelDelegate {
         print("Ready for use")
     }
     
-    func showError(_ viewModel: QuizzViewModel, error: Error) {
+    func showError(_ viewModel: QuizzViewModel, error: QuizzError) {
         print("Should show error")
     }
     
