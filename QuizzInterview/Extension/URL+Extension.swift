@@ -9,6 +9,7 @@
 import Foundation
 
 extension URL {
+    
     init<T: Target>(with target: T) {
         if target.path.isEmpty {
             self = target.baseURL

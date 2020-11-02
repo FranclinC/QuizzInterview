@@ -13,3 +13,14 @@ enum QuizzError: Error {
     case parse
     case unkown
 }
+
+extension QuizzError: LocalizedError {
+    public var errorDescription: String? {
+        switch self {
+        case .generic(let message):
+            return message
+        default:
+            return "Sorry! We are having some issues. Please try again in a moment!"
+        }
+    }
+}

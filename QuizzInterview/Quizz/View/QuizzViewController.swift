@@ -37,7 +37,6 @@ class QuizzViewController: UIViewController {
         fatalError("This should not be used")
     }
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         viewModel.viewDelegate = self
@@ -59,8 +58,14 @@ class QuizzViewController: UIViewController {
         let tap = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
         view.addGestureRecognizer(tap)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(handleNotification(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(handleNotification(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(handleNotification(_:)),
+                                               name: UIResponder.keyboardWillShowNotification,
+                                               object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(handleNotification(_:)),
+                                               name: UIResponder.keyboardWillHideNotification,
+                                               object: nil)
     }
     
     @objc private func hideKeyboard() {
@@ -71,10 +76,10 @@ class QuizzViewController: UIViewController {
         guard let keyboardValue = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue) else { return }
         
         let isKeyboardShowing = notification.name == UIResponder.keyboardWillShowNotification
-        self.bottomViewConstraint.constant = isKeyboardShowing ? keyboardValue.cgRectValue.height - constraintHeightKeyboardUp : constraintHeightKeyboardDown
+        let height = isKeyboardShowing ? keyboardValue.cgRectValue.height - constraintHeightKeyboardUp : constraintHeightKeyboardDown
+        self.bottomViewConstraint.constant = height
         
         UIView.animate(withDuration: 1, delay: 0, options: .curveEaseInOut, animations: {
-            
             self.view.layoutIfNeeded()
         }, completion: nil)
  
@@ -124,10 +129,6 @@ extension QuizzViewController: QuizzViewModelDelegate {
         DispatchQueue.main.async {
             self.tableView.reloadData()
         }
-    }
-    
-    func showError(_ viewModel: QuizzViewModel, error: QuizzError) {
-        print("Should show error")
     }
     
     func correctAnswer(_ viewModel: QuizzViewModel) {

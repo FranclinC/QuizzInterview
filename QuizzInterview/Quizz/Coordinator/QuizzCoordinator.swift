@@ -50,7 +50,7 @@ class QuizzCoodinator {
     }
     
     private func hideLoading() {
-        DispatchQueue.main.async {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             self.loadingViewController?.stopLoading()
             self.loadingViewController?.dismiss(animated: true)
             self.loadingViewController = nil
@@ -62,14 +62,13 @@ class QuizzCoodinator {
 extension QuizzCoodinator: QuizzCoordinatorDelegate {
 
     func showAlert(_ viewModel: QuizzViewModel, title: String, message: String, action: String, handler: (() -> Void)?) {
-        DispatchQueue.main.async {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: action, style: .default, handler: { (_) in
                 handler?()
             }))
             self.view?.present(alert, animated: true, completion: nil)
         }
-        
     }
     
     func loading(_ viewModel: QuizzViewModel, show: Bool) {

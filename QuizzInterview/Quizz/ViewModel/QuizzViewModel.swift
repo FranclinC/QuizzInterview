@@ -10,7 +10,6 @@ import Foundation
 
 protocol QuizzViewModelDelegate: AnyObject {
     func ready(_ viewModel: QuizzViewModel)
-    func showError(_ viewModel: QuizzViewModel, error: QuizzError)
     func correctAnswer(_ viewModel: QuizzViewModel)
     func update(_ viewModel: QuizzViewModel, time: String)
     func reload(_ viewModel: QuizzViewModel)
@@ -41,14 +40,22 @@ class QuizzViewModel{
         coordinatorDelegate?.loading(self, show: true)
         service.fetchQuizzData { [weak self] (result) in
             guard let self = self else { return }
+            self.coordinatorDelegate?.loading(self, show: false)
             switch result {
             case .success(let quizz):
                 self.quizz = quizz
                 self.viewDelegate?.ready(self)
                 self.getCurrentStringTime()
-                self.coordinatorDelegate?.loading(self, show: false)
             case .failure(let error):
-                self.viewDelegate?.showError(self, error: error)
+                DispatchQueue.main.async {
+                    self.coordinatorDelegate?.showAlert(self,
+                                                        title: "Error",
+                                                        message: error.localizedDescription,
+                                                        action: "OK",
+                                                        handler: {
+                                                            self.fetch()
+                    })
+                }
             }
         }
         
@@ -84,18 +91,7 @@ class QuizzViewModel{
         guard let answers = quizz?.answer else { return }
         if correctAnswered.count == answers.count {
             timer?.invalidate()
-            let message = "Good job! You found all the answers in time. Keep up with the great work"
-            self.coordinatorDelegate?
-                .showAlert(self,
-                           title: "Congratulations", message: message,
-                           action: "Play Again",
-                           handler: {
-                            self.correctAnswered.removeAll()
-                            self.getCurrentStringTime()
-                            self.viewDelegate?.ready(self)
-                            self.startCountDown()
-                            
-            })
+            showCongratsAlert()
         }
     }
     
@@ -109,32 +105,19 @@ class QuizzViewModel{
                                      selector: #selector(countDown),
                                      userInfo: nil,
                                      repeats: true)
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + DispatchTimeInterval.seconds(defaultTime)) {
-            self.timer?.invalidate()
-            guard let answer = self.quizz?.answer else { return }
-            let message = "Sorry, time is up! You get \(self.correctAnswered.count) out of \(answer.count) answers"
-            self.coordinatorDelegate?
-                .showAlert(self,
-                           title: "Time finished",
-                           message: message,
-                           action: "Try Again",
-                           handler: {
-                            self.correctAnswered.removeAll()
-                            self.currentTime = self.defaultTime
-                            self.getCurrentStringTime()
-                            self.viewDelegate?.updateScore(self, score: self.getScore())
-                            self.startCountDown()
-            })
-        }
     }
     
     private func getCurrentStringTime() {
-        let minutes = currentTime / 60
-        let seconds = currentTime % 60
-        
-        let text = String(format: "%02d:%02d", minutes, seconds)
-        viewDelegate?.update(self, time: text)
+        if currentTime > 0 {
+            let minutes = currentTime / 60
+            let seconds = currentTime % 60
+            
+            let text = String(format: "%02d:%02d", minutes, seconds)
+            viewDelegate?.update(self, time: text)
+        } else {
+            self.timer?.invalidate()
+            showTryAgainAlert()
+        }
     }
     
     @objc private func countDown() {
@@ -149,6 +132,39 @@ class QuizzViewModel{
     private func isACorrectOption(_ text: String) -> Bool {
         guard let quizz = quizz else { return false }
         return quizz.answer.contains(text)
+    }
+    
+    private func showCongratsAlert() {
+        let message = "Good job! You found all the answers in time. Keep up with the great work"
+        self.coordinatorDelegate?
+            .showAlert(self,
+                       title: "Congratulations",
+                       message: message,
+                       action: "Play Again",
+                       handler: {
+                        self.correctAnswered.removeAll()
+                        self.getCurrentStringTime()
+                        self.viewDelegate?.ready(self)
+                        self.startCountDown()
+                        
+        })
+    }
+    
+    private func showTryAgainAlert() {
+        guard let answer = self.quizz?.answer else { return }
+        let message = "Sorry, time is up! You get \(self.correctAnswered.count) out of \(answer.count) answers"
+        self.coordinatorDelegate?
+            .showAlert(self,
+                       title: "Time finished",
+                       message: message,
+                       action: "Try Again",
+                       handler: {
+                        self.correctAnswered.removeAll()
+                        self.currentTime = self.defaultTime
+                        self.getCurrentStringTime()
+                        self.viewDelegate?.updateScore(self, score: self.getScore())
+                        self.startCountDown()
+        })
     }
     
 }

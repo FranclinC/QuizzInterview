@@ -6,8 +6,6 @@
 //  Copyright © 2020 Franclin Cabral Menezes de Oliveira. All rights reserved.
 //
 
-import Foundation
-
 class QuizzService: Service<QuizzApi> {
     
     func fetchQuizzData(completion: @escaping (Result<Quizz, QuizzError>) -> Void) {
