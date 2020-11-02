@@ -74,9 +74,14 @@ class QuizzViewController: UIViewController {
     
     @objc private func handleNotification(_ notification: Notification) {
         guard let keyboardValue = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue) else { return }
-        
         let isKeyboardShowing = notification.name == UIResponder.keyboardWillShowNotification
-        let height = isKeyboardShowing ? keyboardValue.cgRectValue.height - constraintHeightKeyboardUp : constraintHeightKeyboardDown
+        var height: CGFloat = 0
+        if view.safeAreaInsets.bottom == 0 {
+            height = isKeyboardShowing ? keyboardValue.cgRectValue.height + constraintHeightKeyboardUp : constraintHeightKeyboardDown
+        } else {
+            height = isKeyboardShowing ? keyboardValue.cgRectValue.height - constraintHeightKeyboardUp : constraintHeightKeyboardDown
+        }
+        
         self.bottomViewConstraint.constant = height
         
         UIView.animate(withDuration: 1, delay: 0, options: .curveEaseInOut, animations: {
