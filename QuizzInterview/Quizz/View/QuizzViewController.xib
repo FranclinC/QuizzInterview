@@ -10,7 +10,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="QuizzViewController" customModule="QuizzInterview" customModuleProvider="target">
             <connections>
                 <outlet property="actionButton" destination="6pV-4c-jws" id="sbn-Ge-f4V"/>
-                <outlet property="bottomViewConstraint" destination="If5-Em-uUy" id="OPR-tM-iJA"/>
+                <outlet property="bottomViewConstraint" destination="Dvt-Dt-6gE" id="XAQ-g7-X1L"/>
                 <outlet property="pointsLabel" destination="tGK-Ce-b0R" id="qrO-EN-fgL"/>
                 <outlet property="tableView" destination="7R5-r1-auz" id="jTZ-tg-6fr"/>
                 <outlet property="textField" destination="734-lo-VFX" id="yPx-Ug-1le"/>
@@ -29,23 +29,27 @@
                     <subviews>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6pV-4c-jws">
                             <rect key="frame" x="16" y="53" width="382" height="44"/>
+                            <color key="backgroundColor" systemColor="systemOrangeColor" red="1" green="0.58431372550000005" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="44" id="IN6-ke-M6L"/>
                             </constraints>
-                            <state key="normal" title="Button"/>
+                            <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                            <state key="normal" title="Button">
+                                <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </state>
                             <connections>
                                 <action selector="didTapActionButton:" destination="-1" eventType="touchUpInside" id="CTK-8R-vZ9"/>
                             </connections>
                         </button>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0/50" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tGK-Ce-b0R">
-                            <rect key="frame" x="16" y="16" width="36.5" height="21"/>
-                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <rect key="frame" x="16" y="16" width="40" height="21"/>
+                            <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="5:00" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FOy-rn-e6O">
-                            <rect key="frame" x="362.5" y="16" width="35.5" height="21"/>
-                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <rect key="frame" x="359" y="16" width="39" height="21"/>
+                            <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
                         </label>
@@ -73,19 +77,19 @@
                         <constraint firstItem="FOy-rn-e6O" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="tGK-Ce-b0R" secondAttribute="trailing" constant="16" id="woL-hF-BDh"/>
                     </constraints>
                 </view>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="--" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qeK-Eb-OwS">
-                    <rect key="frame" x="16" y="60" width="382" height="20"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="--" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qeK-Eb-OwS">
+                    <rect key="frame" x="16" y="60" width="382" height="41"/>
+                    <fontDescription key="fontDescription" type="boldSystem" pointSize="34"/>
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="734-lo-VFX">
-                    <rect key="frame" x="16" y="96" width="382" height="34"/>
+                    <rect key="frame" x="16" y="117" width="382" height="34"/>
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                     <textInputTraits key="textInputTraits"/>
                 </textField>
                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="7R5-r1-auz">
-                    <rect key="frame" x="0.0" y="146" width="414" height="603"/>
+                    <rect key="frame" x="0.0" y="167" width="414" height="582"/>
                     <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                 </tableView>
             </subviews>

@@ -10,6 +10,9 @@ import UIKit
 
 class QuizzViewController: UIViewController {
 
+    let constraintHeightKeyboardDown: CGFloat = 16
+    let constraintHeightKeyboardUp: CGFloat = 8
+    
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var textField: UITextField! {
         didSet {
@@ -38,11 +41,43 @@ class QuizzViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         viewModel.viewDelegate = self
+        configureKeyboard()
         setupTableView()
         setupTextField()
         setupButton()
         viewModel.fetch()
         
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        NotificationCenter.default.removeObserver(UIResponder.keyboardWillShowNotification)
+        NotificationCenter.default.removeObserver(UIResponder.keyboardWillHideNotification)
+    }
+    
+    private func configureKeyboard() {
+        let tap = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
+        view.addGestureRecognizer(tap)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(handleNotification(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleNotification(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
+    @objc private func hideKeyboard() {
+        view.endEditing(true)
+    }
+    
+    @objc private func handleNotification(_ notification: Notification) {
+        guard let keyboardValue = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue) else { return }
+        
+        let isKeyboardShowing = notification.name == UIResponder.keyboardWillShowNotification
+        self.bottomViewConstraint.constant = isKeyboardShowing ? keyboardValue.cgRectValue.height - constraintHeightKeyboardUp : constraintHeightKeyboardDown
+        
+        UIView.animate(withDuration: 1, delay: 0, options: .curveEaseInOut, animations: {
+            
+            self.view.layoutIfNeeded()
+        }, completion: nil)
+ 
     }
     
     private func setupTableView() {
@@ -58,6 +93,7 @@ class QuizzViewController: UIViewController {
     }
     
     private func setupTextField() {
+        textField.autocorrectionType = .no
         textField.isEnabled = false
         textField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
     }
@@ -66,6 +102,7 @@ class QuizzViewController: UIViewController {
         textField.isEnabled = true
         textField.becomeFirstResponder()
         viewModel.startCountDown()
+        actionButton.setTitle("Restart", for: .normal)
     }
     
     @objc func textFieldDidChange(_ textField: UITextField) {
@@ -78,12 +115,15 @@ extension QuizzViewController: QuizzViewModelDelegate {
     func ready(_ viewModel: QuizzViewModel) {
         DispatchQueue.main.async {
             self.titleLabel.text = viewModel.getTitle()
-            self.pointsLabel.text = self.viewModel.getScore()
             self.actionButton.isEnabled = true
+            self.textField.isEnabled = false
         }
-        
-        
-        //Start Timer
+    }
+    
+    func reload(_ viewModel: QuizzViewModel) {
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
     }
     
     func showError(_ viewModel: QuizzViewModel, error: QuizzError) {
@@ -94,7 +134,6 @@ extension QuizzViewController: QuizzViewModelDelegate {
         DispatchQueue.main.async {
             self.textField.text?.removeAll()
             self.tableView.reloadData()
-            self.pointsLabel.text = self.viewModel.getScore()
         }
         
     }
@@ -102,6 +141,12 @@ extension QuizzViewController: QuizzViewModelDelegate {
     func update(_ viewModel: QuizzViewModel, time: String) {
         DispatchQueue.main.async {
             self.timeLabel.text = time
+        }
+    }
+    
+    func updateScore(_ viewModel: QuizzViewModel, score: String) {
+        DispatchQueue.main.async {
+            self.pointsLabel.text = score
         }
     }
    
